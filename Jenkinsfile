@@ -1,6 +1,9 @@
 pipeline{
 
     agent any 
+    environment{
+            VERSION = "${env.BUILD_ID}"
+    }
 
     stages{
 
@@ -10,7 +13,7 @@ pipeline{
 
                 script{
                  
-                 git branch: 'main', url: 'https://github.com/vikash-kumar01/Counter_application.git'
+                 git branch: 'main', url: 'https://github.com/shan-github-project/Counter_application.git'
 
                 }
             }
@@ -43,7 +46,7 @@ pipeline{
 
               script{
                    
-                  withSonarQubeEnv(credentialsId: 'sonar-api') {
+                  withSonarQubeEnv(credentialsId: 'sonar-token') {
                      
                      sh 'mvn clean package sonar:sonar'
                   }
@@ -56,7 +59,7 @@ pipeline{
 
               script{
                    
-                   waitForQualityGate abortPipeline: false, credentialsId: 'sonar-api'
+                   waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
 
                 }
              }
@@ -72,33 +75,52 @@ pipeline{
                 }
              }
         }
-        stage('Docker image Building'){
+     //    stage('Docker image Building'){
 
-             steps{
+     //         steps{
 
-              script{
+     //          script{
                    
-                   sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
-                   sh 'docker image tag $JOB_NAME:v1.$BUILD_ID vikashashoke/$JOB_NAME:v1.$BUILD_ID'
-                   sh 'docker image tag $JOB_NAME:v1.$BUILD_ID vikashashoke/$JOB_NAME:latest'
+     //               sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+     //               sh 'docker image tag $JOB_NAME:v1.$BUILD_ID zeeshan30/$JOB_NAME:v1.$BUILD_ID'
+     //               sh 'docker image tag $JOB_NAME:v1.$BUILD_ID zeeshan30/$JOB_NAME:latest'
 
-                }
-             }
-        }
-        stage('Docker image push'){
+     //            }
+     //         }
+     //    }
+     //    stage('Docker image push'){
 
-             steps{
+     //         steps{
 
-              script{
-                   withCredentials([string(credentialsId: 'dockerhub_passwd', variable: 'dockerhub_passwd')]) {
+     //          script{
+     //               withCredentials([string(credentialsId: 'dockerhub_passwd', variable: 'dockerhub_passwd')]) {
                      
-                     sh 'docker login -u vikashashoke -p ${dockerhub_passwd}'
-                     sh 'docker image push vikashashoke/$JOB_NAME:v1.$BUILD_ID'
-                     sh 'docker image push vikashashoke/$JOB_NAME:latest'
-                  }
+     //                 sh 'docker login -u zeeshan30 -p ${dockerhub_passwd}'
+     //                 sh 'docker image push zeeshan30/$JOB_NAME:v1.$BUILD_ID'
+     //                 sh 'docker image push zeeshan30/$JOB_NAME:latest'
+     //              }
+     //            }
+     //         }
+     //    }  
+     
+         stage('docker build & push to nexus repo'){
+
+              steps{
+
+               script{
+                   withCredentials([string(credentialsId: 'nexus_passwd', variable: 'nexus-credential')]) {
+
+                   sh '''
+                      docker build -t 18.233.169.244:8083/springapp:
+
+                   '''
+                   
+                   }
+
                 }
              }
-        }        
+         }
+
     }
 }
 
