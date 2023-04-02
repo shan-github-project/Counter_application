@@ -7,39 +7,39 @@ pipeline{
 
     stages{
 
-        stage('Git Checkout'){
+     //    stage('Git Checkout'){
            
-            steps{
+     //        steps{
 
-                script{
+     //            script{
                  
-                 git branch: 'main', url: 'https://github.com/shan-github-project/Counter_application.git'
+     //             git branch: 'main', url: 'https://github.com/shan-github-project/Counter_application.git'
 
-                }
-            }
-        }
-        stage('Unit Test'){
+     //            }
+     //        }
+     //    }
+     //    stage('Unit Test'){
 
-             steps{
+     //         steps{
 
-              script{
+     //          script{
                    
-                   sh 'mvn test'
+     //               sh 'mvn test'
 
-                }
-             }
-        }
-        stage('Integration Test'){
+     //            }
+     //         }
+     //    }
+     //    stage('Integration Test'){
 
-             steps{
+     //         steps{
 
-              script{
+     //          script{
                    
-                   sh 'mvn verify -DskipUnitTests'
+     //               sh 'mvn verify -DskipUnitTests'
 
-                }
-             }
-        }
+     //            }
+     //         }
+     //    }
         stage('Static Code Analysis'){
 
              steps{
@@ -128,6 +128,11 @@ pipeline{
          }
 
     }
+    post {
+		always {
+			mail bcc: '', body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "${currentBuild.result} CI: Project name -> ${env.JOB_NAME}", to: "addicted.zarrar17@gmail.com";  
+		}
+	}
 }
 
 // squ_531616e45ae941db981c0e09f5721d0ca515e4d4
